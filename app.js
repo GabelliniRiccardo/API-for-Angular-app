@@ -20,10 +20,25 @@ listOfUsers = [{
     'name': 'Mario',
     'surname': 'Rossi',
     'phone': '3487963457'
+  },
+  {
+    'email': 'chiaramontinaro.94@gmail.com',
+    'password': 'ch1ar4',
+    'name': 'Chiara',
+    'surname': 'Montinaro',
+    'phone': '3392264061'
+  },
+  {
+    'email': 'gregoriorossi@hotmail.com',
+    'password': 'greg0r10',
+    'name': 'Gregorio',
+    'surname': 'Rossi',
+    'phone': '3484457678'
   }];
 
 
 app.post('/login', function (req, res) {
+
 
   autenticated = false;
 
@@ -39,18 +54,9 @@ app.post('/login', function (req, res) {
   autenticated = !!userFound;
 
 
-  /*let userFound = listOfUsers.find((user) => {
-    if (user.email === emailTyped && user.password == passwordTyped) {
-      autenticated = true
-    }
-    return autenticated;
-  })*/
-
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-
   if (autenticated) {
-    let { name, surname, phone, email } = userFound;
-    res.json({ name, surname, phone, email });
+    let {name, surname, phone, email} = userFound;
+    res.json({name, surname, phone, email});
   } else {
     res.status('401').send({'error': 'The email or password is incorrect'});
   }
@@ -58,55 +64,34 @@ app.post('/login', function (req, res) {
 
 });
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-});
 
+app.get('/users', function (req, res) {
+  if (autenticated) {
+    let listToSend = listOfUsers;
+    res.json(listToSend)
+  } else {
+    res.status('401').send({'error': 'The user is not authorized'});
+  }
+})
 
-/* scope globale booleani + usa find per trovare gli utenti
-* */
+app.post('/users', function (req, res) {
 
-/*
-var express = require('express');
-var app = express();
+  if (autenticated) {
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
+    listOfUsers = req.body
 
+    res.json('Users Updated!')
 
-app.post('/login', function (req, res) {
-
-  autenticated = false;
-
-  listOfUsers = [{'email': 'gabelliniriccardo.94@gmail.com', 'password': 'riccard0'},
-                 {'email': 'mariorossi@hotmail.com', 'password': 'mar10'}];
-
-  emailTyped = req.body.email;
-  passwordTyped = req.body.password;
-
-  console.log('email : ' + emailTyped);
-  console.log('password :' + passwordTyped);
-
-  listOfUsers.forEach((user) => {
-    if (user.email === emailTyped && user.password == passwordTyped) {
-      autenticated = true;
-    }
-  })
-
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-
-  if(autenticated) {
-    res.send('200');
-  }else {
-    res.send('401');
+  }
+  else {
+    res.status('401').json('The user is not authorized');
   }
 
 
 });
 
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
 
- */
